@@ -9,7 +9,7 @@ namespace HospitalManagement.Service.Controllers
 {
     [ApiController]
     [Route("signup")]
-    public class SignupController : Controller
+    public class SignupController : ControllerBase
     {
 
         [HttpGet]

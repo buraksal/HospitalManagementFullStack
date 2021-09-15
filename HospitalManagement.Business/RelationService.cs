@@ -7,11 +7,11 @@ using System.Text;
 
 namespace HospitalManagement.Business
 {
-    public class RelationManager : IDisposable
+    public class RelationService : IDisposable
     {
         private UnitOfWork unitOfWork;
 
-        public RelationManager()
+        public RelationService()
         {
             unitOfWork = new UnitOfWork();
         }

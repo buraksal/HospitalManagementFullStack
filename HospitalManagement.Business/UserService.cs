@@ -5,18 +5,18 @@ using System.Linq;
 
 namespace HospitalManagement.Business
 {
-    public class UserManager: IDisposable
+    public class UserService: IDisposable
     {
         private UnitOfWork unitOfWork;
 
-        public UserManager()
+        public UserService()
         {
             unitOfWork = new UnitOfWork();
         }
 
         public IQueryable<User> GetAll()
         {
-            return unitOfWork.UserRepository.Get(orderBy: q => q.OrderBy(d => d.Name)).AsQueryable();
+            return unitOfWork.UserRepository.Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable();
         }
 
         public User Find(int? id)

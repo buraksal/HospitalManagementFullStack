@@ -7,18 +7,18 @@ using System.Text;
 
 namespace HospitalManagement.Business
 {
-    public class PatientManager : IDisposable
+    public class PatientService : IDisposable
     {
         private UnitOfWork unitOfWork;
 
-        public PatientManager()
+        public PatientService()
         {
             unitOfWork = new UnitOfWork();
         }
 
         public IQueryable<Patient> GetAll()
         {
-            return unitOfWork.PatientRepository.Get(orderBy: q => q.OrderBy(d => d.Name)).AsQueryable();
+            return unitOfWork.PatientRepository.Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable();
         }
 
         public Patient Find(int? id)

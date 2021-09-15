@@ -1,4 +1,5 @@
-﻿using HospitalManagement.Service.DTO;
+﻿using HospitalManagement.Business;
+using HospitalManagement.Service.DTO;
 using HospitalManagement.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,10 +10,10 @@ using System.Threading.Tasks;
 namespace HospitalManagement.Service.Controllers
 {
     [ApiController]
-    [Route("doctor")]
-    public class UserController : Controller
+    [Route("user")]
+    public class UserController : ControllerBase
     {
-
+        UserService userService = new UserService();
 
         [HttpGet]
         [Route("getPatientList")]

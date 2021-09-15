@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HospitalManagement.Business\HospitalManagement.Business.csproj" />
     <ProjectReference Include="..\HospitalManagement.Shared\HospitalManagement.Shared.csproj" />
   </ItemGroup>
 
