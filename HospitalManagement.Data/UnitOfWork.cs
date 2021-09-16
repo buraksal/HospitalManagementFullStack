@@ -1,55 +1,44 @@
-﻿using HospitalManagement.Shared.Models;
+﻿using HospitalManagement.Data.Interfaces;
+using HospitalManagement.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace HospitalManagement.Data
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private HospitalManagementDbContext context = new HospitalManagementDbContext();
-        private GenericRepository<User> userRepo;
-        private GenericRepository<Patient> patientRepo;
-        private GenericRepository<UserPatientRelation> relationRepo;
-        public GenericRepository<User> UserRepository
-        {
-            get
-            {
-                if (this.userRepo == null)
-                {
-                    this.userRepo = new GenericRepository<User>(context);
-                }
-                return userRepo;
-            }
-        }
+        private readonly HospitalManagementDbContext context;
+        public IUserRepository Users { get; }
+        public IPatientRepository Patients { get; }
+        public IRelationRepository Relations { get; }
 
-        public GenericRepository<Patient> PatientRepository
+        public UnitOfWork(HospitalManagementDbContext dbContext,
+            IUserRepository users,
+            IPatientRepository patients,
+            IRelationRepository relations)
         {
-            get
-            {
-                if (this.patientRepo == null)
-                {
-                    this.patientRepo = new GenericRepository<Patient>(context);
-                }
-                return patientRepo;
-            }
-        }
-
-        public GenericRepository<UserPatientRelation> RelationRepository
-        {
-            get
-            {
-                if (this.relationRepo == null)
-                {
-                    this.relationRepo = new GenericRepository<UserPatientRelation>(context);
-                }
-                return relationRepo;
-            }
+            this.context = dbContext;
+            this.Users = users;
+            this.Patients = patients;
+            this.Relations = relations;
         }
 
         public void Save()
         {
-            context.SaveChanges();
+            using (var dbContextTransaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    context.SaveChanges();
+                    dbContextTransaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Log Exception Handling message                      
+                    dbContextTransaction.Rollback();
+                }
+            }
         }
 
         private bool disposed = false;

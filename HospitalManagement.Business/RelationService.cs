@@ -1,4 +1,5 @@
-﻿using HospitalManagement.Data;
+﻿using HospitalManagement.Business.Interfaces;
+using HospitalManagement.Data;
 using HospitalManagement.Shared.Models;
 using System;
 using System.Collections.Generic;
@@ -7,41 +8,41 @@ using System.Text;
 
 namespace HospitalManagement.Business
 {
-    public class RelationService : IDisposable
+    public class RelationService : IRelationService, IDisposable
     {
-        private UnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
-        public RelationService()
+        public RelationService(IUnitOfWork unitOfWork)
         {
-            unitOfWork = new UnitOfWork();
+            this.unitOfWork = unitOfWork;
         }
 
         public IQueryable<UserPatientRelation> GetAll()
         {
-            return unitOfWork.RelationRepository.Get(orderBy: q => q.OrderBy(d => d.RelationId)).AsQueryable();
+            return unitOfWork.Relations.Get(orderBy: q => q.OrderBy(d => d.RelationId)).AsQueryable();
         }
 
         public UserPatientRelation Find(int? id)
         {
-            return unitOfWork.RelationRepository.GetByID(id);
+            return unitOfWork.Relations.GetByID(id);
         }
 
         public void Insert(UserPatientRelation relation)
         {
-            unitOfWork.RelationRepository.Insert(relation);
+            unitOfWork.Relations.Insert(relation);
             unitOfWork.Save();
         }
 
         public void Update(UserPatientRelation relation)
         {
-            unitOfWork.RelationRepository.Update(relation);
+            unitOfWork.Relations.Update(relation);
             unitOfWork.Save();
         }
 
         public void Delete(int? id)
         {
-            UserPatientRelation relation = unitOfWork.RelationRepository.GetByID(id);
-            unitOfWork.RelationRepository.Delete(relation);
+            UserPatientRelation relation = unitOfWork.Relations.GetByID(id);
+            unitOfWork.Relations.Delete(relation);
             unitOfWork.Save();
         }
 

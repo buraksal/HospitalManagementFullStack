@@ -1,23 +1,18 @@
-﻿using System;
+﻿using HospitalManagement.Service.DTO.Interfaces;
+using HospitalManagement.Shared.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace HospitalManagement.Service.DTO
 {
-    public enum UserTypes
+    public class SignupDto: ISignupDto
     {
-        Admin = 0,
-        Doctor = 1,
-        Nurse = 2,
-        Patient = 3
-    }
-    public interface IDto
-    {
+        public UserTypes UserType { get; set; }
         public string Name { get; set; }
         public string Ssn { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-
     }
 }

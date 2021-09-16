@@ -9,7 +9,6 @@ namespace HospitalManagement.Service.Controllers
 {
     public class PatientController : ControllerBase
     {
-        PatientService patientService = new PatientService();
 
         public IActionResult Index()
         {

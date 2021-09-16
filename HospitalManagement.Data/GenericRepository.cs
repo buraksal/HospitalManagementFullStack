@@ -1,4 +1,5 @@
-﻿using HospitalManagement.Shared.Models;
+﻿using HospitalManagement.Data.Interfaces;
+using HospitalManagement.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -8,15 +9,13 @@ using System.Linq.Expressions;
 namespace HospitalManagement.Data
 {
 
-    public class GenericRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity>: IGenericRepository<TEntity> where TEntity : class
     {
-        internal HospitalManagementDbContext context;
-        internal DbSet<TEntity> dbSet;
+        private readonly HospitalManagementDbContext context;
 
         public GenericRepository(HospitalManagementDbContext context)
         {
             this.context = context;
-            this.dbSet = context.Set<TEntity>();
         }
 
         public virtual IEnumerable<TEntity> Get(
@@ -24,7 +23,7 @@ namespace HospitalManagement.Data
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "")
         {
-            IQueryable<TEntity> query = dbSet;
+            IQueryable<TEntity> query = context.Set<TEntity>();
 
             if (filter != null)
             {
@@ -49,33 +48,29 @@ namespace HospitalManagement.Data
 
         public virtual TEntity GetByID(object id)
         {
-            return dbSet.Find(id);
+            return context.Set<TEntity>().Find(id);
         }
 
         public virtual void Insert(TEntity entity)
         {
-            dbSet.Add(entity);
+            context.Set<TEntity>().Add(entity);
         }
 
         public virtual void Delete(object id)
         {
-            TEntity entityToDelete = dbSet.Find(id);
+            TEntity entityToDelete = context.Set<TEntity>().Find(id);
             Delete(entityToDelete);
         }
 
         public virtual void Delete(TEntity entityToDelete)
         {
-            if (context.Entry(entityToDelete).State == EntityState.Detached)
-            {
-                dbSet.Attach(entityToDelete);
-            }
-            dbSet.Remove(entityToDelete);
+            context.Set<TEntity>().Remove(entityToDelete);
         }
 
         public virtual void Update(TEntity entityToUpdate)
         {
-            dbSet.Attach(entityToUpdate);
-            context.Entry(entityToUpdate).State = EntityState.Modified;
+            TEntity entity = context.Set<TEntity>().Find(entityToUpdate);
+            context.Entry(entity).CurrentValues.SetValues(entityToUpdate);
         }
     }
 }

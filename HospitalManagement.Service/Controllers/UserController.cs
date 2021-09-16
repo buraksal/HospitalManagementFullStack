@@ -1,4 +1,5 @@
 ﻿using HospitalManagement.Business;
+using HospitalManagement.Data;
 using HospitalManagement.Service.DTO;
 using HospitalManagement.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ namespace HospitalManagement.Service.Controllers
     [Route("user")]
     public class UserController : ControllerBase
     {
-        UserService userService = new UserService();
+
 
         [HttpGet]
         [Route("getPatientList")]

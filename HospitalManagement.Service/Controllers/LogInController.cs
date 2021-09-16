@@ -12,9 +12,7 @@ namespace HospitalManagement.Service.Controllers
     [Route("login")]
     public class LogInController : ControllerBase
     {
-
-        UserService userService = new UserService();
-
+        IUserService userService;
         [HttpGet]
         public ActionResult LogInControl()
         {
@@ -25,12 +23,12 @@ namespace HospitalManagement.Service.Controllers
         [Route("signin")]
         public ActionResult LogInControl(LoginDto logInRequest)
         {
-            var users = userService.GetAll();
+            Boolean successful = userService.LogInControl(logInRequest);
 
             
 
-            //user managera git, getall ı çağır kontrolü yap?, kontrol businesste yapılmalı?
-            return Ok("Your Email is not on our database");
+            //user service git, getall ı çağır kontrolü yap?, kontrol businesste yapılmalı?
+            return Ok("Your Email is not on our database" + successful);
         }
     }
 }

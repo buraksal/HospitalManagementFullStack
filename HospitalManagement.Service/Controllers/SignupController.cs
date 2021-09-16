@@ -1,4 +1,6 @@
-﻿using HospitalManagement.Service.DTO;
+﻿using HospitalManagement.Business;
+using HospitalManagement.Data;
+using HospitalManagement.Service.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,14 @@ namespace HospitalManagement.Service.Controllers
     [Route("signup")]
     public class SignupController : ControllerBase
     {
+        private readonly IUserService userService;
+        private readonly IUnitOfWork unitOfWork;
+
+
+        public SignupController()
+        {
+            userService = new UserService(unitOfWork);
+        }
 
         [HttpGet]
         public ActionResult SignUpControl()
@@ -23,8 +33,9 @@ namespace HospitalManagement.Service.Controllers
         [Route("create")]
         public IActionResult Create(SignupDto request)
         {
-            //user managera git, doğru tipi seçip(user/patient etc. (enum kontrolünü yap!)) insert yap
-            return null;
+            Boolean successful = userService.SignUp(request);
+
+            return Ok("Your Email is not on our database" + successful);
         }
     }
 }

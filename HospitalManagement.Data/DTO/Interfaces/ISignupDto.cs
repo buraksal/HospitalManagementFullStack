@@ -1,15 +1,17 @@
-﻿using System;
+﻿using HospitalManagement.Shared.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HospitalManagement.Service.DTO
+namespace HospitalManagement.Service.DTO.Interfaces
 {
-    interface ILoginDto
+    public interface ISignupDto
     {
         public UserTypes UserType { get; set; }
+        public string Name { get; set; }
+        public string Ssn { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        
     }
 }
