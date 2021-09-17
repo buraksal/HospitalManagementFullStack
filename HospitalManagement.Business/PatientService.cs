@@ -1,6 +1,7 @@
 ﻿using HospitalManagement.Business.Interfaces;
 using HospitalManagement.Data;
 using HospitalManagement.Shared.Models;
+using HospitalManagent.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,37 +13,40 @@ namespace HospitalManagement.Business
     {
         private readonly IUnitOfWork unitOfWork;
 
-        public PatientService(IUnitOfWork unitOfWork)
+        private readonly IContainer container;
+
+        public PatientService(IUnitOfWork unitOfWork, IContainer container)
         {
             this.unitOfWork = unitOfWork;
+            this.container = container;
         }
 
         public IQueryable<Patient> GetAll()
         {
-            return unitOfWork.Patients.Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable();
+            return this.container.Repository<Patient>().Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable();
         }
 
-        public Patient Find(int? id)
+        public Patient Find(string ssn)
         {
-           return unitOfWork.Patients.GetByID(id);
+            var patient = this.container.Repository<Patient>().Get(p => p.Ssn.Equals(ssn));
+            return patient.ToList()[0];
         }
 
         public void Insert(Patient patient)
         {
-            unitOfWork.Patients.Insert(patient);
+            this.container.Repository<Patient>().Insert(patient);
             unitOfWork.Save();
         }
 
         public void Update(Patient patient)
         {
-            unitOfWork.Patients.Update(patient);
+            this.container.Repository<Patient>().Update(patient);
             unitOfWork.Save();
         }
 
-        public void Delete(int? id)
+        public void Delete(Patient patient)
         {
-            Patient patient = unitOfWork.Patients.GetByID(id);
-            unitOfWork.Patients.Delete(patient);
+            this.container.Repository<Patient>().Delete(patient);
             unitOfWork.Save();
         }
 

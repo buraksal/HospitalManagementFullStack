@@ -1,5 +1,6 @@
 ﻿using HospitalManagement.Business;
 using HospitalManagement.Service.DTO;
+using HospitalManagement.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,13 @@ namespace HospitalManagement.Service.Controllers
     [Route("login")]
     public class LogInController : ControllerBase
     {
-        IUserService userService;
+        private readonly IUserService userService;
+
+        public LogInController(IUserService userService)
+        {
+            this.userService = userService;
+        }
+
         [HttpGet]
         public ActionResult LogInControl()
         {
@@ -23,12 +30,13 @@ namespace HospitalManagement.Service.Controllers
         [Route("signin")]
         public ActionResult LogInControl(LoginDto logInRequest)
         {
-            Boolean successful = userService.LogInControl(logInRequest);
-
+            var user = userService.LogInControl(logInRequest);
+            if(user != null)
+            {
+                return Ok(user);
+            }
+            return Ok("Unsuccessful LogIn Attempt");
             
-
-            //user service git, getall ı çağır kontrolü yap?, kontrol businesste yapılmalı?
-            return Ok("Your Email is not on our database" + successful);
         }
     }
 }

@@ -13,6 +13,7 @@ namespace HospitalManagement.Data.Interfaces
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             string includeProperties = "");
         T GetByID(object id);
+        T GetBySSN(object ssn);
         void Insert(T entity);
         void Delete(object id);
         void Delete(T entityToDelete);

@@ -7,10 +7,9 @@ namespace HospitalManagement.Shared.Models
 {
     public class UserPatientRelation
     {
-        [Key]
-        public Guid RelationId { get; set; }
-        public string UserId { get; set; }
-        public string PatientId { get; set; }
+        public Guid Id { get; set; }
+        public string UserName { get; set; }
+        public string PatientName { get; set; }
         public string Complaint { get; set; }
 
     }

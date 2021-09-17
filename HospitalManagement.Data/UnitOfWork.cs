@@ -9,19 +9,12 @@ namespace HospitalManagement.Data
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly HospitalManagementDbContext context;
-        public IUserRepository Users { get; }
-        public IPatientRepository Patients { get; }
-        public IRelationRepository Relations { get; }
 
-        public UnitOfWork(HospitalManagementDbContext dbContext,
-            IUserRepository users,
-            IPatientRepository patients,
-            IRelationRepository relations)
+
+        public UnitOfWork(HospitalManagementDbContext dbContext)
         {
             this.context = dbContext;
-            this.Users = users;
-            this.Patients = patients;
-            this.Relations = relations;
+
         }
 
         public void Save()
@@ -33,8 +26,9 @@ namespace HospitalManagement.Data
                     context.SaveChanges();
                     dbContextTransaction.Commit();
                 }
-                catch (Exception)
+                catch (Exception exp)
                 {
+                    Console.WriteLine(exp);
                     //Log Exception Handling message                      
                     dbContextTransaction.Rollback();
                 }

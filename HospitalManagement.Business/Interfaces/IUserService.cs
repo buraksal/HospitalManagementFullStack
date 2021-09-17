@@ -15,7 +15,7 @@ namespace HospitalManagement.Business
         void Update(User user);
         void Delete(int? id);
         void Dispose();
-        bool LogInControl(LoginDto logInRequest);
+        User LogInControl(LoginDto logInRequest);
         bool SignUp(SignupDto signUpRequest);
 
     }

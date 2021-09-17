@@ -1,48 +1,51 @@
 ﻿using HospitalManagement.Data;
 using HospitalManagement.Service.DTO;
 using HospitalManagement.Shared.Models;
+using HospitalManagent.Infrastructure;
 using System;
 using System.Linq;
 
 namespace HospitalManagement.Business
 {
-    public class UserService: IUserService,IDisposable
+    public class UserService : IUserService, IDisposable
     {
         private readonly IUnitOfWork unitOfWork;
 
-        public UserService(IUnitOfWork unitOfWork)
+        private readonly IContainer container;
+
+        public UserService(IUnitOfWork unitOfWork, IContainer container)
         {
             this.unitOfWork = unitOfWork;
+            this.container = container;
         }
 
         public IQueryable<User> GetAll()
         {
-            return unitOfWork.Users.Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable();
+            var result = this.container.Repository<User>().Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable();
+            return result;
         }
 
         public User Find(int? id)
         {
-
-            return unitOfWork.Users.GetByID(id);
+            return this.container.Repository<User>().GetByID(id);
         }
 
         public void Insert(User user)
         {
-
-            unitOfWork.Users.Insert(user);
+            this.container.Repository<User>().Insert(user);
             unitOfWork.Save();
         }
 
         public void Update(User user)
         {
-            unitOfWork.Users.Update(user);
+            this.container.Repository<User>().Update(user);
             unitOfWork.Save();
         }
 
         public void Delete(int? id)
         {
-            User user = unitOfWork.Users.GetByID(id);
-            unitOfWork.Users.Delete(user);
+            User user = this.container.Repository<User>().GetByID(id);
+            this.container.Repository<User>().Delete(user);
             unitOfWork.Save();
         }
 
@@ -51,41 +54,40 @@ namespace HospitalManagement.Business
             unitOfWork.Dispose();
         }
 
-        public bool LogInControl(LoginDto logInRequest)
+        public User LogInControl(LoginDto logInRequest)
         {
-            var user = unitOfWork.Users.Get().Where(u => u.Email.Equals(logInRequest.Email) && u.Password.Equals(logInRequest.Password));
-            if(user == null)
-            {
-                return false;
-            } else
-            {
-                return true;
-            }
+            var user = this.container.Repository<User>().Get(u => u.Email.Equals(logInRequest.Email) && u.Password.Equals(logInRequest.Password));
+            
+            if (user == null)
+                return null;
+            else
+                return user.ToList()[0];
         }
+
         public bool SignUp(SignupDto signUpRequest)
         {
-            var user = unitOfWork.Users.Get().Where(u => u.Ssn.Equals(signUpRequest.Ssn));
-            if (user == null)
+            var user = this.container.Repository<User>().Get(l => l.Ssn == signUpRequest.Ssn).FirstOrDefault();
+            if (user != null)
             {
                 return false;
             }
-            else
-            {
-                unitOfWork.Users.Insert(CreateUser(signUpRequest));
-                unitOfWork.Save();
-                return true;
-            }
+
+            this.container.Repository<User>().Insert(CreateUser(signUpRequest));
+            unitOfWork.Save();
+            return true;
         }
 
         public User CreateUser(SignupDto signUpRequest)
         {
-            User newUser = new User();
-            newUser.Id = Guid.NewGuid();
-            newUser.Name = signUpRequest.Name;
-            newUser.Email = signUpRequest.Email;
-            newUser.Password = signUpRequest.Password;
-            newUser.Ssn = signUpRequest.Ssn;
-            newUser.UserType = signUpRequest.UserType;
+            User newUser = new User
+            {
+                Id = Guid.NewGuid(),
+                Name = signUpRequest.Name,
+                Email = signUpRequest.Email,
+                Password = signUpRequest.Password,
+                Ssn = signUpRequest.Ssn,
+                UserType = signUpRequest.UserType
+            };
             return newUser;
         }
 

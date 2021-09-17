@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HospitalManagement.Data\HospitalManagement.Data.csproj" />
-    <ProjectReference Include="..\HospitalManagent.Infrastructure\HospitalManagent.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

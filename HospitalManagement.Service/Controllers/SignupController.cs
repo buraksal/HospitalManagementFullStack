@@ -11,15 +11,14 @@ namespace HospitalManagement.Service.Controllers
 {
     [ApiController]
     [Route("signup")]
-    public class SignupController : ControllerBase
+    public class SignUpController : ControllerBase
     {
         private readonly IUserService userService;
-        private readonly IUnitOfWork unitOfWork;
 
-
-        public SignupController()
+        public SignUpController(IUserService userService)
         {
-            userService = new UserService(unitOfWork);
+            //userService = new UserService(unitOfWork);
+            this.userService = userService;
         }
 
         [HttpGet]
@@ -35,7 +34,7 @@ namespace HospitalManagement.Service.Controllers
         {
             Boolean successful = userService.SignUp(request);
 
-            return Ok("Your Email is not on our database" + successful);
+            return Ok("Is Successful: " + successful);
         }
     }
 }

@@ -8,9 +8,6 @@ namespace HospitalManagement.Data
 {
     public interface IUnitOfWork
     {
-        IUserRepository Users { get; }
-        IPatientRepository Patients { get; }
-        IRelationRepository Relations { get; }
         void Save();
         void Dispose();
     }

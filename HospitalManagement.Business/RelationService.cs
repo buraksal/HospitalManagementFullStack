@@ -1,6 +1,7 @@
 ﻿using HospitalManagement.Business.Interfaces;
 using HospitalManagement.Data;
 using HospitalManagement.Shared.Models;
+using HospitalManagent.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,37 +13,41 @@ namespace HospitalManagement.Business
     {
         private readonly IUnitOfWork unitOfWork;
 
-        public RelationService(IUnitOfWork unitOfWork)
+        private readonly IContainer container;
+
+        public RelationService(IUnitOfWork unitOfWork, IContainer container)
         {
             this.unitOfWork = unitOfWork;
+            this.container = container;
         }
 
         public IQueryable<UserPatientRelation> GetAll()
         {
-            return unitOfWork.Relations.Get(orderBy: q => q.OrderBy(d => d.RelationId)).AsQueryable();
+            return this.container.Repository<UserPatientRelation>().Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable();
         }
 
-        public UserPatientRelation Find(int? id)
+        public UserPatientRelation Find(string patientName)
         {
-            return unitOfWork.Relations.GetByID(id);
+            var relation = this.container.Repository<UserPatientRelation>().Get(r => r.PatientName.Equals(patientName));
+            return relation.ToList()[0];
         }
 
         public void Insert(UserPatientRelation relation)
         {
-            unitOfWork.Relations.Insert(relation);
+            this.container.Repository<UserPatientRelation>().Insert(relation);
             unitOfWork.Save();
         }
 
         public void Update(UserPatientRelation relation)
         {
-            unitOfWork.Relations.Update(relation);
+            this.container.Repository<UserPatientRelation>().Update(relation);
             unitOfWork.Save();
         }
 
-        public void Delete(int? id)
+        public void Delete(UserPatientRelation relation)
         {
-            UserPatientRelation relation = unitOfWork.Relations.GetByID(id);
-            unitOfWork.Relations.Delete(relation);
+            //UserPatientRelation relation = this.container.Repository<UserPatientRelation>().GetByID(id);
+            this.container.Repository<UserPatientRelation>().Delete(relation);
             unitOfWork.Save();
         }
 

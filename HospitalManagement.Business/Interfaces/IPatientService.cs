@@ -9,10 +9,10 @@ namespace HospitalManagement.Business.Interfaces
     public interface IPatientService
     {
         IQueryable<Patient> GetAll();
-        Patient Find(int? id);
+        Patient Find(string ssn);
         void Insert(Patient patient);
         void Update(Patient patient);
-        void Delete(int? id);
+        void Delete(Patient patient);
         void Dispose();
     }
 }
