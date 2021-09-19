@@ -1,4 +1,5 @@
-﻿using HospitalManagement.Shared.Models;
+﻿using HospitalManagement.Service.DTO;
+using HospitalManagement.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,9 @@ namespace HospitalManagement.Business.Interfaces
     {
         IQueryable<Patient> GetAll();
         Patient Find(string ssn);
-        void Insert(Patient patient);
-        void Update(Patient patient);
-        void Delete(Patient patient);
+        void Insert(PatientDto request);
+        void Update(PatientDto request);
+        void Delete(PatientDto request);
         void Dispose();
     }
 }

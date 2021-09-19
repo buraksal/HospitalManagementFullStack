@@ -35,6 +35,15 @@ namespace HospitalManagement.Data
             }
         }
 
+        public void Rollback()
+        {
+            using (var dbContextTransaction = context.Database.BeginTransaction())
+            {
+                dbContextTransaction.Rollback();
+            }
+        }
+
+
         private bool disposed = false;
 
         protected virtual void Dispose(bool disposing)

@@ -9,6 +9,7 @@ namespace HospitalManagement.Data
     public interface IUnitOfWork
     {
         void Save();
+        void Rollback();
         void Dispose();
     }
 }

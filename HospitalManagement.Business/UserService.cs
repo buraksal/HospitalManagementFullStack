@@ -56,12 +56,11 @@ namespace HospitalManagement.Business
 
         public User LogInControl(LoginDto logInRequest)
         {
-            var user = this.container.Repository<User>().Get(u => u.Email.Equals(logInRequest.Email) && u.Password.Equals(logInRequest.Password));
-            
+            User user = this.container.Repository<User>().Get(u => u.Email.Equals(logInRequest.Email) && u.Password.Equals(logInRequest.Password)).First();
             if (user == null)
                 return null;
             else
-                return user.ToList()[0];
+                return user;
         }
 
         public bool SignUp(SignupDto signUpRequest)
@@ -90,6 +89,5 @@ namespace HospitalManagement.Business
             };
             return newUser;
         }
-
     }
 }

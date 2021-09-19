@@ -14,6 +14,6 @@ namespace HospitalManagement.Service.DTO
         public string Email { get; set; }
         public string Password { get; set; }
         public string Complaint { get; set; }
-        public string CreatedBy { get; set; }
+        public User CreatedBy { get; set; }
     }
 }

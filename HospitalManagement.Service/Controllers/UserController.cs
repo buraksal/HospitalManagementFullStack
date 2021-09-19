@@ -36,11 +36,9 @@ namespace HospitalManagement.Service.Controllers
         [Route("createpatient")]
         public IActionResult CreatePatient(PatientDto request)
         {
-            Patient patient = CreatedPatient(request);
-            this.patientService.Insert(patient);
-            UserPatientRelation relation = CreateRelation(request);
-            this.relationService.Insert(relation);
-            return Ok("Patient with SSN "+ patient.Ssn + " created!");
+            this.patientService.Insert(request);
+            this.relationService.Insert(request);
+            return Ok("Patient with SSN " + request.Ssn + " created!");
         }
 
         [HttpPost]
@@ -55,13 +53,7 @@ namespace HospitalManagement.Service.Controllers
         [Route("updatePatient")]
         public IActionResult UpdatePatient(PatientDto request)
         {
-            Patient patient = this.patientService.Find(request.Ssn);
-            this.patientService.Update(patient);
-            if((patient.Name != request.Name) || (patient.CreatedBy != request.CreatedBy))
-            {
-                UserPatientRelation relation = this.relationService.Find(patient.Name);
-                this.relationService.Update(relation);
-            }
+            this.patientService.Update(request);
             return Ok("Updated!");
         }
 
@@ -69,38 +61,8 @@ namespace HospitalManagement.Service.Controllers
         [Route("deletePatient")]
         public IActionResult DeletePatient(PatientDto request)
         {
-            Patient patient = this.patientService.Find(request.Ssn);
-            this.patientService.Delete(patient);
-            UserPatientRelation relation = this.relationService.Find(request.Name);
-            this.relationService.Delete(relation);
+            this.patientService.Delete(request);
             return Ok("Deleted!");
-        }
-
-        private Patient CreatedPatient(PatientDto request)
-        {
-            Patient patient = new Patient
-            {
-                Id = Guid.NewGuid(),
-                Name = request.Name,
-                Email = request.Email,
-                Password = request.Password,
-                Complaint = request.Complaint,
-                Ssn = request.Ssn,
-                CreatedBy = request.CreatedBy
-            };
-            return patient;
-        }
-
-        private UserPatientRelation CreateRelation(PatientDto request)
-        {
-            UserPatientRelation relation = new UserPatientRelation
-            {
-                Id = Guid.NewGuid(),
-                PatientName = request.Name,
-                UserName = request.CreatedBy,
-                Complaint = request.Complaint
-            };
-            return relation;
         }
 
     }

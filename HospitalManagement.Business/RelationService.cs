@@ -1,5 +1,6 @@
 ﻿using HospitalManagement.Business.Interfaces;
 using HospitalManagement.Data;
+using HospitalManagement.Service.DTO;
 using HospitalManagement.Shared.Models;
 using HospitalManagent.Infrastructure;
 using System;
@@ -28,25 +29,27 @@ namespace HospitalManagement.Business
 
         public UserPatientRelation Find(string patientName)
         {
-            var relation = this.container.Repository<UserPatientRelation>().Get(r => r.PatientName.Equals(patientName));
+            var relation = this.container.Repository<UserPatientRelation>().Get(r => r.Patient.Name.Equals(patientName));
             return relation.ToList()[0];
         }
 
-        public void Insert(UserPatientRelation relation)
+        public void Insert(PatientDto patient)
         {
+            UserPatientRelation relation = CreateRelation(patient);
             this.container.Repository<UserPatientRelation>().Insert(relation);
             unitOfWork.Save();
         }
 
-        public void Update(UserPatientRelation relation)
+        public void Update(PatientDto patient)
         {
+            UserPatientRelation relation = this.Find(patient.Ssn);
             this.container.Repository<UserPatientRelation>().Update(relation);
             unitOfWork.Save();
         }
 
-        public void Delete(UserPatientRelation relation)
+        public void Delete(PatientDto patient)
         {
-            //UserPatientRelation relation = this.container.Repository<UserPatientRelation>().GetByID(id);
+            UserPatientRelation relation = this.Find(patient.Ssn);
             this.container.Repository<UserPatientRelation>().Delete(relation);
             unitOfWork.Save();
         }
@@ -56,5 +59,16 @@ namespace HospitalManagement.Business
             unitOfWork.Dispose();
         }
 
+        private UserPatientRelation CreateRelation(PatientDto request)
+        {
+            UserPatientRelation relation = new UserPatientRelation
+            {
+                Id = Guid.NewGuid(),
+                //PatientName = request.Name,
+                //UserName = request.CreatedBy,
+                //Complaint = request.Complaint
+            };
+            return relation;
+        }
     }
 }

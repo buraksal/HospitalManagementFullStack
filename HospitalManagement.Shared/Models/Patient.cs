@@ -13,7 +13,7 @@ namespace HospitalManagement.Shared.Models
         public string Password { get; set; }
         public string Ssn { get; set; }
         public string Complaint { get; set; }
-        public string CreatedBy { get; set; }
+        public User CreatedBy { get; set; }
 
     }
 }

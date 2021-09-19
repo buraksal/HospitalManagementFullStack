@@ -1,5 +1,6 @@
 ﻿using HospitalManagement.Business.Interfaces;
 using HospitalManagement.Data;
+using HospitalManagement.Service.DTO;
 using HospitalManagement.Shared.Models;
 using HospitalManagent.Infrastructure;
 using System;
@@ -32,27 +33,60 @@ namespace HospitalManagement.Business
             return patient.ToList()[0];
         }
 
-        public void Insert(Patient patient)
+        public void Insert(PatientDto request)
         {
+            Patient patient = CreatePatient(request);
             this.container.Repository<Patient>().Insert(patient);
             unitOfWork.Save();
         }
 
-        public void Update(Patient patient)
+        public void Update(PatientDto request)
         {
-            this.container.Repository<Patient>().Update(patient);
+            Patient patient = this.Find(request.Ssn);
+            if(patient == null || patient.Ssn != request.Ssn)
+            {
+                return;
+            }
+            Patient updateTo = new Patient
+            {
+                Id = patient.Id,
+                Name = request.Name,
+                Email = request.Email,
+                Password = request.Password,
+                Complaint = request.Complaint,
+                Ssn = patient.Ssn,
+                CreatedBy = request.CreatedBy
+            };
+            this.container.Repository<Patient>().Update(updateTo);
             unitOfWork.Save();
         }
 
-        public void Delete(Patient patient)
+        public void Delete(PatientDto request)
         {
+            Patient patient = this.Find(request.Ssn);
             this.container.Repository<Patient>().Delete(patient);
+            //relation service çağır
             unitOfWork.Save();
         }
 
         public void Dispose()
         {
             unitOfWork.Dispose();
+        }
+
+        private Patient CreatePatient(PatientDto request)
+        {
+            Patient patient = new Patient
+            {
+                Id = Guid.NewGuid(),
+                Name = request.Name,
+                Email = request.Email,
+                Password = request.Password,
+                Complaint = request.Complaint,
+                Ssn = request.Ssn,
+                CreatedBy = request.CreatedBy
+            };
+            return patient;
         }
 
     }

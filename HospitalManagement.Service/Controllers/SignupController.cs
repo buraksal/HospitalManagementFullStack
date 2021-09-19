@@ -17,15 +17,7 @@ namespace HospitalManagement.Service.Controllers
 
         public SignUpController(IUserService userService)
         {
-            //userService = new UserService(unitOfWork);
             this.userService = userService;
-        }
-
-        [HttpGet]
-        public ActionResult SignUpControl()
-        {
-            //user managera git, getallı çağır kontrolü yap?
-            return Ok("Successful Mail: asd");
         }
 
         [HttpPost]
@@ -33,7 +25,6 @@ namespace HospitalManagement.Service.Controllers
         public IActionResult Create(SignupDto request)
         {
             Boolean successful = userService.SignUp(request);
-
             return Ok("Is Successful: " + successful);
         }
     }

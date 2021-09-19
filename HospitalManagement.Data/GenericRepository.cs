@@ -1,8 +1,8 @@
 ﻿using HospitalManagement.Data.Interfaces;
 using HospitalManagement.Shared.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -74,8 +74,8 @@ namespace HospitalManagement.Data
 
         public virtual void Update(TEntity entityToUpdate)
         {
-            TEntity entity = context.Set<TEntity>().Find(entityToUpdate);
-            context.Entry(entity).CurrentValues.SetValues(entityToUpdate);
+            context.Set<TEntity>().Attach(entityToUpdate);
+            context.Entry(entityToUpdate).State = EntityState.Modified;
         }
     }
 }
