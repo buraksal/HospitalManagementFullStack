@@ -75,7 +75,7 @@ namespace HospitalManagement.Business
 
         private UserPatientRelation CreateRelation(PatientDto request)
         {
-            Patient patient = this.patientService.CreatePatient(request);
+            Patient patient = this.patientService.Find(request.Ssn);
             UserPatientRelation relation = new UserPatientRelation
             {
                 Id = Guid.NewGuid(),
