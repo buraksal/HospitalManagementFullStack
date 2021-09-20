@@ -10,12 +10,12 @@ namespace HospitalManagement.Business
     public interface IUserService
     {
         IQueryable<User> GetAll();
-        User Find(int? id);
+        User Find(string ssn);
         void Insert(User user);
         void Update(User user);
         void Delete(int? id);
         void Dispose();
-        User LogInControl(LoginDto logInRequest);
+        string LogInControl(LoginDto logInRequest);
         bool SignUp(SignupDto signUpRequest);
 
     }

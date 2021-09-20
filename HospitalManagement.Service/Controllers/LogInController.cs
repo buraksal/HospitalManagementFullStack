@@ -27,13 +27,11 @@ namespace HospitalManagement.Service.Controllers
         }
 
         [HttpPost]
-        [Route("signin")]
+        [Route("auth")]
         public ActionResult LogInControl(LoginDto logInRequest)
         {
-            User user = this.userService.LogInControl(logInRequest);
-            if(user != null) return Ok(user);
-            return Ok("Unsuccessful LogIn Attempt");
-            
+            var returnObj = this.userService.LogInControl(logInRequest);
+            return Ok(returnObj);
         }
     }
 }

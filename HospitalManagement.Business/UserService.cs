@@ -2,8 +2,13 @@
 using HospitalManagement.Service.DTO;
 using HospitalManagement.Shared.Models;
 using HospitalManagent.Infrastructure;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 
 namespace HospitalManagement.Business
 {
@@ -25,9 +30,9 @@ namespace HospitalManagement.Business
             return result;
         }
 
-        public User Find(int? id)
+        public User Find(string ssn)
         {
-            return this.container.Repository<User>().GetByID(id);
+            return this.container.Repository<User>().Get(u => u.Ssn.Equals(ssn)).FirstOrDefault();
         }
 
         public void Insert(User user)
@@ -54,13 +59,29 @@ namespace HospitalManagement.Business
             unitOfWork.Dispose();
         }
 
-        public User LogInControl(LoginDto logInRequest)
+        public string LogInControl(LoginDto logInRequest)
         {
-            User user = this.container.Repository<User>().Get(u => u.Email.Equals(logInRequest.Email) && u.Password.Equals(logInRequest.Password)).First();
+            User user = this.container.Repository<User>().Get(u => u.Email.Equals(logInRequest.Email) && u.Password.Equals(logInRequest.Password)).FirstOrDefault();
             if (user == null)
-                return null;
+            {
+                return "wrong credentials";
+            }
+                
             else
-                return user;
+            {
+                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"));
+                var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+                var tokenOptions = new JwtSecurityToken(
+                    issuer: "https://localhost:44349",
+                    audience: "https://localhost:44349",
+                    claims: new List<Claim>(),
+                    expires: DateTime.Now.AddMinutes(5),
+                    signingCredentials: signingCredentials
+                );
+                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+                return tokenString;
+            }
+                
         }
 
         public bool SignUp(SignupDto signUpRequest)

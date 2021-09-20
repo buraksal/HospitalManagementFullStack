@@ -3,6 +3,7 @@ using HospitalManagement.Business.Interfaces;
 using HospitalManagement.Data;
 using HospitalManagement.Service.DTO;
 using HospitalManagement.Shared.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ namespace HospitalManagement.Service.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("getPatientList")]
         public List<Patient> GetPatientList()
         {
@@ -33,6 +35,7 @@ namespace HospitalManagement.Service.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("createpatient")]
         public IActionResult CreatePatient(PatientDto request)
         {
@@ -42,6 +45,7 @@ namespace HospitalManagement.Service.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("getPatient")]
         public Patient GetPatient(PatientDto request)
         {
@@ -50,6 +54,7 @@ namespace HospitalManagement.Service.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("updatePatient")]
         public IActionResult UpdatePatient(PatientDto request)
         {
@@ -58,6 +63,7 @@ namespace HospitalManagement.Service.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         [Route("deletePatient")]
         public IActionResult DeletePatient(PatientDto request)
         {

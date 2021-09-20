@@ -15,5 +15,6 @@ namespace HospitalManagement.Business.Interfaces
         void Update(PatientDto request);
         void Delete(PatientDto request);
         void Dispose();
+        Patient CreatePatient(PatientDto request);
     }
 }

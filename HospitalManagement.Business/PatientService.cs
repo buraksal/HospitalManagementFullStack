@@ -16,10 +16,13 @@ namespace HospitalManagement.Business
 
         private readonly IContainer container;
 
-        public PatientService(IUnitOfWork unitOfWork, IContainer container)
+        private readonly IUserService userService;
+
+        public PatientService(IUnitOfWork unitOfWork, IContainer container, IUserService userService)
         {
             this.unitOfWork = unitOfWork;
             this.container = container;
+            this.userService = userService;
         }
 
         public IQueryable<Patient> GetAll()
@@ -29,8 +32,8 @@ namespace HospitalManagement.Business
 
         public Patient Find(string ssn)
         {
-            var patient = this.container.Repository<Patient>().Get(p => p.Ssn.Equals(ssn));
-            return patient.ToList()[0];
+            var patient = this.container.Repository<Patient>().Get(p => p.Ssn.Equals(ssn)).FirstOrDefault();
+            return patient;
         }
 
         public void Insert(PatientDto request)
@@ -47,6 +50,7 @@ namespace HospitalManagement.Business
             {
                 return;
             }
+            User user = this.userService.Find(request.CreatedBySsn);
             Patient updateTo = new Patient
             {
                 Id = patient.Id,
@@ -55,7 +59,7 @@ namespace HospitalManagement.Business
                 Password = request.Password,
                 Complaint = request.Complaint,
                 Ssn = patient.Ssn,
-                CreatedBy = request.CreatedBy
+                CreatedBy = user
             };
             this.container.Repository<Patient>().Update(updateTo);
             unitOfWork.Save();
@@ -74,8 +78,9 @@ namespace HospitalManagement.Business
             unitOfWork.Dispose();
         }
 
-        private Patient CreatePatient(PatientDto request)
+        public Patient CreatePatient(PatientDto request)
         {
+            User user = this.userService.Find(request.CreatedBySsn);
             Patient patient = new Patient
             {
                 Id = Guid.NewGuid(),
@@ -84,7 +89,7 @@ namespace HospitalManagement.Business
                 Password = request.Password,
                 Complaint = request.Complaint,
                 Ssn = request.Ssn,
-                CreatedBy = request.CreatedBy
+                CreatedBy = user
             };
             return patient;
         }

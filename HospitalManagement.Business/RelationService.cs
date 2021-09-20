@@ -16,10 +16,16 @@ namespace HospitalManagement.Business
 
         private readonly IContainer container;
 
-        public RelationService(IUnitOfWork unitOfWork, IContainer container)
+        private readonly IPatientService patientService;
+
+        private readonly IUserService userService;
+
+        public RelationService(IUnitOfWork unitOfWork, IContainer container, IPatientService patientService, IUserService userService)
         {
             this.unitOfWork = unitOfWork;
             this.container = container;
+            this.patientService = patientService;
+            this.userService = userService;
         }
 
         public IQueryable<UserPatientRelation> GetAll()
@@ -27,10 +33,11 @@ namespace HospitalManagement.Business
             return this.container.Repository<UserPatientRelation>().Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable();
         }
 
-        public UserPatientRelation Find(string patientName)
+        //Düzeltilecek!! patient name
+        public UserPatientRelation Find(string ssn)
         {
-            var relation = this.container.Repository<UserPatientRelation>().Get(r => r.Patient.Name.Equals(patientName));
-            return relation.ToList()[0];
+            var relation = this.container.Repository<UserPatientRelation>().Get(r => r.Patient.Ssn.Equals(ssn)).FirstOrDefault();
+            return relation;
         }
 
         public void Insert(PatientDto patient)
@@ -61,12 +68,12 @@ namespace HospitalManagement.Business
 
         private UserPatientRelation CreateRelation(PatientDto request)
         {
+            Patient patient = this.patientService.CreatePatient(request);
             UserPatientRelation relation = new UserPatientRelation
             {
                 Id = Guid.NewGuid(),
-                //PatientName = request.Name,
-                //UserName = request.CreatedBy,
-                //Complaint = request.Complaint
+                Patient = patient,
+                User = patient.CreatedBy
             };
             return relation;
         }
