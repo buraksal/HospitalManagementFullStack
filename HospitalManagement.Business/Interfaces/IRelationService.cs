@@ -10,7 +10,8 @@ namespace HospitalManagement.Business.Interfaces
     public interface IRelationService
     {
         IQueryable<UserPatientRelation> GetAll();
-        UserPatientRelation Find(string patientName);
+        UserPatientRelation Find(Guid patientId);
+        List<UserPatientRelation> FindAll(Guid patientId);
         void Insert(PatientDto patient);
         void Update(PatientDto patient);
         void Delete(PatientDto patient);

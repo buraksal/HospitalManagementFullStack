@@ -9,6 +9,6 @@ namespace HospitalManagement.Service.DTO.Interfaces
     public interface IPatientDto: IDto
     {
         public string Complaint { get; set; }
-        public string CreatedBySsn { get; set; }
+        public string CreatedBy { get; set; }
     }
 }

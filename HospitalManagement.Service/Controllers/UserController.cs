@@ -35,7 +35,7 @@ namespace HospitalManagement.Service.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        
         [Route("createpatient")]
         public IActionResult CreatePatient(PatientDto request)
         {
@@ -63,7 +63,7 @@ namespace HospitalManagement.Service.Controllers
         }
 
         [HttpDelete]
-        [Authorize]
+        [Authorize(Roles = "Doctor")]
         [Route("deletePatient")]
         public IActionResult DeletePatient(PatientDto request)
         {

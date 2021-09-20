@@ -18,6 +18,8 @@ namespace HospitalManagement.Business
 
         private readonly IUserService userService;
 
+        private readonly IRelationService relationService;
+
         public PatientService(IUnitOfWork unitOfWork, IContainer container, IUserService userService)
         {
             this.unitOfWork = unitOfWork;
@@ -38,9 +40,15 @@ namespace HospitalManagement.Business
 
         public void Insert(PatientDto request)
         {
-            Patient patient = CreatePatient(request);
-            this.container.Repository<Patient>().Insert(patient);
-            unitOfWork.Save();
+            Patient toCompare = this.container.Repository<Patient>().Get(p => p.Ssn.Equals(request.Ssn) 
+                                    && p.Complaint.Equals(request.Complaint)).FirstOrDefault(); 
+            if(toCompare == null)
+            {
+                Patient patient = CreatePatient(request);
+                this.container.Repository<Patient>().Insert(patient);
+                unitOfWork.Save();
+            }
+            
         }
 
         public void Update(PatientDto request)
@@ -50,7 +58,7 @@ namespace HospitalManagement.Business
             {
                 return;
             }
-            User user = this.userService.Find(request.CreatedBySsn);
+            User user = this.userService.Find(request.CreatedBy);
             Patient updateTo = new Patient
             {
                 Id = patient.Id,
@@ -69,7 +77,9 @@ namespace HospitalManagement.Business
         {
             Patient patient = this.Find(request.Ssn);
             this.container.Repository<Patient>().Delete(patient);
-            //relation service çağır
+            List<UserPatientRelation> relations = this.relationService.FindAll(patient.Id);
+            //Delete all implementation to Generic Repository?
+            this.container.Repository<UserPatientRelation>().Delete(relations);
             unitOfWork.Save();
         }
 
@@ -80,7 +90,7 @@ namespace HospitalManagement.Business
 
         public Patient CreatePatient(PatientDto request)
         {
-            User user = this.userService.Find(request.CreatedBySsn);
+            User user = this.userService.Find(request.CreatedBy);
             Patient patient = new Patient
             {
                 Id = Guid.NewGuid(),

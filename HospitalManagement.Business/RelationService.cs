@@ -33,11 +33,16 @@ namespace HospitalManagement.Business
             return this.container.Repository<UserPatientRelation>().Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable();
         }
 
-        //Düzeltilecek!! patient name
-        public UserPatientRelation Find(string ssn)
+        public UserPatientRelation Find(Guid id)
         {
-            var relation = this.container.Repository<UserPatientRelation>().Get(r => r.Patient.Ssn.Equals(ssn)).FirstOrDefault();
+            var relation = this.container.Repository<UserPatientRelation>().Get(r => r.Patient.Id.Equals(id)).FirstOrDefault();
             return relation;
+        }
+
+        public List<UserPatientRelation> FindAll(Guid id)
+        {
+            List<UserPatientRelation> result = this.container.Repository<UserPatientRelation>().Get(q => q.Id.Equals(id)).ToList();
+            return result;
         }
 
         public void Insert(PatientDto patient)
@@ -49,14 +54,16 @@ namespace HospitalManagement.Business
 
         public void Update(PatientDto patient)
         {
-            UserPatientRelation relation = this.Find(patient.Ssn);
+            Patient patientObj = this.patientService.Find(patient.Ssn);
+            UserPatientRelation relation = this.Find(patientObj.Id);
             this.container.Repository<UserPatientRelation>().Update(relation);
             unitOfWork.Save();
         }
 
         public void Delete(PatientDto patient)
         {
-            UserPatientRelation relation = this.Find(patient.Ssn);
+            Patient patientObj = this.patientService.Find(patient.Ssn);
+            UserPatientRelation relation = this.Find(patientObj.Id);
             this.container.Repository<UserPatientRelation>().Delete(relation);
             unitOfWork.Save();
         }

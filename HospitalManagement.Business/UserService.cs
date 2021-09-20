@@ -71,13 +71,18 @@ namespace HospitalManagement.Business
             {
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"));
                 var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Role, user.UserType.ToString())
+                };
                 var tokenOptions = new JwtSecurityToken(
                     issuer: "https://localhost:44349",
                     audience: "https://localhost:44349",
-                    claims: new List<Claim>(),
-                    expires: DateTime.Now.AddMinutes(5),
+                    claims: claims,
+                    expires: DateTime.UtcNow.AddMinutes(5),
                     signingCredentials: signingCredentials
                 );
+                tokenOptions.Payload["userName"] = user.Name;
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
                 return tokenString;
             }

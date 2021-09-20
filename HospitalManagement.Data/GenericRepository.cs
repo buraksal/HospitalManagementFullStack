@@ -51,11 +51,6 @@ namespace HospitalManagement.Data
             return context.Set<TEntity>().Find(id);
         }
 
-        public virtual TEntity GetBySSN(object ssn)
-        {
-            return context.Set<TEntity>().Find(ssn);
-        }
-
         public virtual void Insert(TEntity entity)
         {
             context.Set<TEntity>().Add(entity);
