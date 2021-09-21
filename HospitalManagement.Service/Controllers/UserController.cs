@@ -1,4 +1,5 @@
-﻿using HospitalManagement.Business;
+﻿using AutoMapper;
+using HospitalManagement.Business;
 using HospitalManagement.Business.Interfaces;
 using HospitalManagement.Data;
 using HospitalManagement.Service.DTO;
@@ -18,11 +19,13 @@ namespace HospitalManagement.Service.Controllers
     {
         private readonly IPatientService patientService;
         private readonly IRelationService relationService;
+        private readonly IMapper mapper;
 
-        public UserController(IPatientService patientService, IRelationService relationService)
+        public UserController(IPatientService patientService, IRelationService relationService, IMapper mapper)
         {
             this.patientService = patientService;
             this.relationService = relationService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -30,27 +33,27 @@ namespace HospitalManagement.Service.Controllers
         [Route("getPatientList")]
         public List<Patient> GetPatientList()
         {
-            List<Patient> patientList = this.patientService.GetAll().ToList<Patient>();
+            List<Patient> patientList = this.patientService.GetAll().ToList();
             return patientList;
         }
 
         [HttpPost]
-        
+        [Authorize]
         [Route("createpatient")]
         public IActionResult CreatePatient(PatientDto request)
         {
             this.patientService.Insert(request);
-            this.relationService.Insert(request);
             return Ok("Patient with SSN " + request.Ssn + " created!");
         }
 
         [HttpPost]
         [Authorize]
         [Route("getPatient")]
-        public Patient GetPatient(PatientDto request)
+        public IActionResult GetPatient(PatientDto request)
         {
             Patient patient = this.patientService.Find(request.Ssn);
-            return patient;
+            PatientDto retVal = mapper.Map<PatientDto>(patient);
+            return Ok(retVal);
         }
 
         [HttpPut]
@@ -69,6 +72,21 @@ namespace HospitalManagement.Service.Controllers
         {
             this.patientService.Delete(request);
             return Ok("Deleted!");
+        }
+
+        [HttpPost]
+        [Route("test1")]
+        public void Test1()
+        {
+            List<string> exception = null; 
+            exception.Add("Burak");
+        }
+
+        [HttpPost]
+        [Route("test2")]
+        public void Test2()
+        {
+            this.patientService.Test2();
         }
 
     }

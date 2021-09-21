@@ -82,7 +82,7 @@ namespace HospitalManagement.Business
                     expires: DateTime.UtcNow.AddMinutes(5),
                     signingCredentials: signingCredentials
                 );
-                tokenOptions.Payload["userName"] = user.Name;
+                tokenOptions.Payload["User"] = user;
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
                 return tokenString;
             }

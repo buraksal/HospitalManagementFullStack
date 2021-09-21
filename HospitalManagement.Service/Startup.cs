@@ -1,8 +1,10 @@
+using AutoMapper;
 using HospitalManagement.Business;
 using HospitalManagement.Business.Interfaces;
 using HospitalManagement.Data;
 using HospitalManagement.Data.Interfaces;
 using HospitalManagent.Infrastructure;
+using HospitalManagent.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -53,6 +55,13 @@ namespace HospitalManagement.Service
                 };
             });
 
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
             services.AddControllers();
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -62,7 +71,10 @@ namespace HospitalManagement.Service
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IPatientService, PatientService>();
             services.AddScoped<IRelationService, RelationService>();
+            services.AddScoped<IErrorService, ErrorService>();
+
             services.AddScoped<IContainer, Container>();
+            
 
             services.AddDbContext<HospitalManagementDbContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -89,6 +101,8 @@ namespace HospitalManagement.Service
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.ConfigureExceptionMiddleware();
 
             app.UseHttpsRedirection();
 

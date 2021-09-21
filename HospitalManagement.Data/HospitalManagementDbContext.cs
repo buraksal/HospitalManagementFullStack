@@ -1,4 +1,5 @@
-﻿using HospitalManagement.Shared.Models;
+﻿using HospitalManagement.Data.DTO;
+using HospitalManagement.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace HospitalManagement.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<UserPatientRelation> UserPatientRelations { get; set; }
+        public DbSet<ErrorDto> Errors { get; set; }
 
     }
 }

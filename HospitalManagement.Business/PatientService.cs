@@ -3,10 +3,10 @@ using HospitalManagement.Data;
 using HospitalManagement.Service.DTO;
 using HospitalManagement.Shared.Models;
 using HospitalManagent.Infrastructure;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace HospitalManagement.Business
 {
@@ -29,12 +29,16 @@ namespace HospitalManagement.Business
 
         public IQueryable<Patient> GetAll()
         {
-            return this.container.Repository<Patient>().Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable();
+            var pageNumber = 1;
+            var patients = this.container.Repository<Patient>().Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable();
+            var onePagePatients = patients.ToPagedList(pageNumber, 2);
+            return (IQueryable<Patient>)onePagePatients;
         }
 
         public Patient Find(string ssn)
         {
-            var patient = this.container.Repository<Patient>().Get(p => p.Ssn.Equals(ssn)).FirstOrDefault();
+            //TODO include implementation after 1-1, 1-* 
+            Patient patient = this.container.Repository<Patient>().Get(p => p.Ssn.Equals(ssn)).FirstOrDefault();
             return patient;
         }
 
@@ -46,6 +50,7 @@ namespace HospitalManagement.Business
             {
                 Patient patient = CreatePatient(request);
                 this.container.Repository<Patient>().Insert(patient);
+                this.relationService.Insert(request);
                 unitOfWork.Save();
             }
             
@@ -102,6 +107,12 @@ namespace HospitalManagement.Business
                 CreatedBy = user
             };
             return patient;
+        }
+
+        public void Test2()
+        {
+            List<string> exception = null;
+            exception.Add("Burak");
         }
 
     }
