@@ -1,5 +1,6 @@
 ﻿using HospitalManagement.Business.Interfaces;
 using HospitalManagement.Data;
+using HospitalManagement.Data.DTO;
 using HospitalManagement.Service.DTO;
 using HospitalManagement.Shared.Models;
 using HospitalManagent.Infrastructure;
@@ -29,10 +30,16 @@ namespace HospitalManagement.Business
 
         public IQueryable<Patient> GetAll()
         {
-            var pageNumber = 1;
-            var patients = this.container.Repository<Patient>().Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable();
-            var onePagePatients = patients.ToPagedList(pageNumber, 2);
-            return (IQueryable<Patient>)onePagePatients;
+            var patients = this.container.Repository<Patient>().Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable().ToList();
+            return (IQueryable<Patient>)patients;
+        }
+
+        public IQueryable<Patient> GetWithPagination(PaginationDto request)
+        {
+            var patients = this.container.Repository<Patient>().Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable().
+                    Skip(request.PageNumber*request.TakeLimit).Take(request.TakeLimit);
+            
+            return patients;
         }
 
         public Patient Find(string ssn)

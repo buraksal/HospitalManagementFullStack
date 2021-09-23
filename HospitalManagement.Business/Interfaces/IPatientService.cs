@@ -1,4 +1,5 @@
-﻿using HospitalManagement.Service.DTO;
+﻿using HospitalManagement.Data.DTO;
+using HospitalManagement.Service.DTO;
 using HospitalManagement.Shared.Models;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace HospitalManagement.Business.Interfaces
     public interface IPatientService
     {
         IQueryable<Patient> GetAll();
+        IQueryable<Patient> GetWithPagination(PaginationDto request);
         Patient Find(string ssn);
         void Insert(PatientDto request);
         void Update(PatientDto request);

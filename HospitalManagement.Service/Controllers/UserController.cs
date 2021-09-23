@@ -2,6 +2,7 @@
 using HospitalManagement.Business;
 using HospitalManagement.Business.Interfaces;
 using HospitalManagement.Data;
+using HospitalManagement.Data.DTO;
 using HospitalManagement.Service.DTO;
 using HospitalManagement.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -31,10 +32,11 @@ namespace HospitalManagement.Service.Controllers
         [HttpGet]
         [Authorize]
         [Route("getPatientList")]
-        public List<Patient> GetPatientList()
+        public List<PatientDto> GetPatientList()
         {
             List<Patient> patientList = this.patientService.GetAll().ToList();
-            return patientList;
+            List<PatientDto> retVal = mapper.Map<List<Patient>, List<PatientDto>>(patientList);
+            return retVal;
         }
 
         [HttpPost]
@@ -44,6 +46,16 @@ namespace HospitalManagement.Service.Controllers
         {
             this.patientService.Insert(request);
             return Ok("Patient with SSN " + request.Ssn + " created!");
+        }
+
+        [HttpPost]
+        //[Authorize]
+        [Route("getPatientListPagination")]
+        public IActionResult GetPatientListPagination(PaginationDto request)
+        {
+            List<Patient> patientList = this.patientService.GetWithPagination(request).ToList();
+            List<PatientDto> retVal = mapper.Map<List<Patient>, List<PatientDto>>(patientList);
+            return Ok(retVal);
         }
 
         [HttpPost]
