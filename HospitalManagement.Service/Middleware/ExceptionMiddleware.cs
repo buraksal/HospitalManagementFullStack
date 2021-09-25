@@ -1,5 +1,6 @@
 ﻿using HospitalManagement.Business.Interfaces;
 using HospitalManagement.Shared.Models;
+using HospitalManagent.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,12 @@ namespace HospitalManagent.Service
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate next;
+        private readonly CurrentUserContext currentUserContext;
 
-        public ExceptionMiddleware(RequestDelegate next)
+        public ExceptionMiddleware(RequestDelegate next,CurrentUserContext currentUserContext)
         {
             this.next = next;
-            
+            this.currentUserContext = currentUserContext;
         }
 
         public async Task InvokeAsync(HttpContext httpContext, IErrorService errorService)
@@ -34,6 +36,8 @@ namespace HospitalManagent.Service
         private async Task HandleExceptionAsync(HttpContext context, Exception exception, IErrorService errorService)
         {
             context.Response.ContentType = "application/json";
+
+            var userId=this.currentUserContext.GetCurrentUserId();
             string errorMessage;
             switch (exception)
             {
@@ -57,7 +61,7 @@ namespace HospitalManagent.Service
             };
             await context.Response.WriteAsync(error.ToString());
 
-            errorService.Insert(errorService.CreateError("",error.Message));
+            errorService.Insert(errorService.CreateError(userId, error.Message));
 
         }
 

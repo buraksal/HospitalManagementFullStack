@@ -3,6 +3,7 @@ using HospitalManagement.Data.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Text;
 
 namespace HospitalManagent.Infrastructure
@@ -17,6 +18,7 @@ namespace HospitalManagent.Infrastructure
         public Container(HospitalManagementDbContext context)
         {
             this.context = context;
+            //this.context.Users.Include
         }
 
         public IGenericRepository<T> Repository<T>() where T : class

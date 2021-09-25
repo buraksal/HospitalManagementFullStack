@@ -48,8 +48,16 @@ namespace HospitalManagement.Service.Controllers
             return Ok("Patient with SSN " + request.Ssn + " created!");
         }
 
+        [HttpGet]
+        [Authorize]
+        [Route("testWithToken")]
+        public IActionResult TestWithToken()
+        {
+            return Ok("I am up ");
+        }
+
         [HttpPost]
-        //[Authorize]
+        [Authorize]
         [Route("getPatientListPagination")]
         public IActionResult GetPatientListPagination(PaginationDto request)
         {

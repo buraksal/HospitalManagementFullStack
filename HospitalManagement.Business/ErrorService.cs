@@ -1,4 +1,5 @@
 ﻿using HospitalManagement.Business.Interfaces;
+using HospitalManagement.Data;
 using HospitalManagement.Data.DTO;
 using HospitalManagent.Infrastructure;
 using System;
@@ -9,10 +10,12 @@ namespace HospitalManagement.Business
 {
     public class ErrorService : IErrorService
     {
+        private readonly IUnitOfWork unitOfWork;
         private readonly IContainer container;
 
-        public ErrorService(IContainer container)
+        public ErrorService(IUnitOfWork unitOfWork, IContainer container)
         {
+            this.unitOfWork = unitOfWork;
             this.container = container;
         }
 
@@ -34,6 +37,7 @@ namespace HospitalManagement.Business
         public void Insert(ErrorDto error)
         {
             this.container.Repository<ErrorDto>().Insert(error);
+            unitOfWork.Save();
         }
     }
 }

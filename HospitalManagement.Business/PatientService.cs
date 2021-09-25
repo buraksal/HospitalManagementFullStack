@@ -4,7 +4,6 @@ using HospitalManagement.Data.DTO;
 using HospitalManagement.Service.DTO;
 using HospitalManagement.Shared.Models;
 using HospitalManagent.Infrastructure;
-using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +17,18 @@ namespace HospitalManagement.Business
         private readonly IContainer container;
 
         private readonly IUserService userService;
-
+        private readonly CurrentUserContext currentUserContext;
         private readonly IRelationService relationService;
 
-        public PatientService(IUnitOfWork unitOfWork, IContainer container, IUserService userService)
+        public PatientService(IUnitOfWork unitOfWork,
+            IContainer container, 
+            IUserService userService,
+            CurrentUserContext currentUserContext)
         {
             this.unitOfWork = unitOfWork;
             this.container = container;
             this.userService = userService;
+            this.currentUserContext = currentUserContext;
         }
 
         public IQueryable<Patient> GetAll()
@@ -36,6 +39,8 @@ namespace HospitalManagement.Business
 
         public IQueryable<Patient> GetWithPagination(PaginationDto request)
         {
+
+            var currentUser = this.currentUserContext.GetCurrentUserId();
             var patients = this.container.Repository<Patient>().Get(orderBy: q => q.OrderBy(d => d.Id)).AsQueryable().
                     Skip(request.PageNumber*request.TakeLimit).Take(request.TakeLimit);
             

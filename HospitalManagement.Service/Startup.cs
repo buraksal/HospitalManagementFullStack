@@ -8,6 +8,7 @@ using HospitalManagent.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
@@ -50,7 +51,7 @@ namespace HospitalManagement.Service
                     ValidateIssuerSigningKey = true,
 
                     ValidIssuer = "https://localhost:44349",
-                    ValidAudience = "https://localhost:44349",
+                    ValidAudience = "https://localhost:4200",
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"))
                 };
             });
@@ -74,7 +75,8 @@ namespace HospitalManagement.Service
             services.AddScoped<IErrorService, ErrorService>();
 
             services.AddScoped<IContainer, Container>();
-            
+            services.AddTransient<CurrentUserContext>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddDbContext<HospitalManagementDbContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));

@@ -73,11 +73,13 @@ namespace HospitalManagement.Business
                 var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Role, user.UserType.ToString())
+                    new Claim(ClaimTypes.Role, user.UserType.ToString()),
+                    new Claim(ClaimTypes.Email,user.Email),
+                    new Claim("userId",user.Id.ToString())
                 };
                 var tokenOptions = new JwtSecurityToken(
                     issuer: "https://localhost:44349",
-                    audience: "https://localhost:44349",
+                    audience: "https://localhost:4200",
                     claims: claims,
                     expires: DateTime.UtcNow.AddMinutes(5),
                     signingCredentials: signingCredentials
